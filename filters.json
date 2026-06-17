@@ -1,0 +1,9 @@
+{
+  "price_min": 2000,
+  "price_max": 4500,
+  "area_min": 28,
+  "rooms": [1, 2, 3],
+  "districts": ["Śródmieście", "Wola", "Mokotów", "Ochota", "Praga-Południe", "Żoliborz"],
+  "pets_only": false,
+  "paused": false
+}

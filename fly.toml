@@ -1,0 +1,20 @@
+# Fly.io config. Rename "app" to something unique, then: fly launch --no-deploy
+# then fly deploy. See README for the full free-tier walkthrough.
+app = "warsaw-rental-bot"
+primary_region = "waw"   # Warsaw
+
+[build]
+  dockerfile = "Dockerfile"
+
+# A tiny always-on machine (no public ports needed — it only talks to Telegram).
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+
+# Persist filters.json + seen.json across restarts.
+[mounts]
+  source = "data"
+  destination = "/app/data"
+
+[env]
+  STATE_DIR = "/app/data"

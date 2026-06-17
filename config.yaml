@@ -1,0 +1,56 @@
+# ─────────────────────────────────────────────────────────────
+#  Warsaw rental bot – search configuration
+#  Edit the numbers/lists below to change what the bot looks for.
+#  After editing, just commit & push (GitHub Actions picks it up).
+# ─────────────────────────────────────────────────────────────
+
+search:
+  # Monthly rent in PLN (zł). Listings outside this range are skipped.
+  price_min: 2000
+  price_max: 4500
+
+  # Minimum flat size in m². Set to 0 to disable.
+  area_min: 28
+
+  # Number of rooms to include. Allowed: 1, 2, 3, 4
+  # Leave empty ([]) to include any number of rooms.
+  rooms: [1, 2, 3]
+
+  # Warsaw districts to search. Leave empty ([]) for ALL districts.
+  # Available: Śródmieście, Mokotów, Wola, Ochota, Praga-Południe,
+  #            Praga-Północ, Żoliborz, Bielany, Bemowo, Ursynów,
+  #            Mokotów, Włochy, Ursus, Targówek, Wilanów, Białołęka,
+  #            Wawer, Rembertów, Wesoła
+  districts:
+    - Śródmieście
+    - Wola
+    - Mokotów
+    - Ochota
+    - Praga-Południe
+    - Żoliborz
+
+filters:
+  # Drop listings whose title contains any of these (short-term / scam noise).
+  exclude_keywords:
+    - dziennie
+    - "na doby"
+    - "na dobę"
+    - "po dobie"
+    - doba
+    - noclegi
+    - nocleg
+    - krótkoterminow
+    - "short term"
+    - "per night"
+    - posuteczno
+    - посуточно
+    - сутки
+
+  # Anything cheaper than this is almost always a scam or a per-night price.
+  price_sanity_min: 1200
+
+poll:
+  # Only used when running locally in --loop mode (cloud uses cron instead).
+  interval_minutes: 30
+  # Max listings to push per cycle, so a first run doesn't flood you.
+  max_per_cycle: 15
