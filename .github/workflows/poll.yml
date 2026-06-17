@@ -1,0 +1,55 @@
+name: poll-rentals
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      prime:
+        description: "Prime mode (record current listings, send nothing)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: poll-rentals
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ "${{ inputs.prime }}" = "true" ]; then
+            python -m bot.cron --prime
+          else
+            python -m bot.cron
+          fi
+
+      - name: Persist state
+        run: |
+          git config user.name  "rental-bot"
+          git config user.email "rental-bot@users.noreplace.github.com"
+          git add -A seen.json filters.json tg_offset.json 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update bot state [skip ci]"
+            git push
+          else
+            echo "No state changes"
+          fi
